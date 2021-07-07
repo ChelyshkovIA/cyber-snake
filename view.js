@@ -1,7 +1,121 @@
 export class View {
-	_getMarkup(text) {
+	_getMarkup() {
 		return `
-			<h1>${text}</h1>
+		<section class="game-section">
+			<div class="header">
+				<h1 class="header-text">SNAKE</h1>
+			</div>
+
+			<div class="game-field">
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+
+				<div class="row">
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</div>
+			</div>
+		</section>
 		`;
 	}
 
@@ -15,8 +129,6 @@ export class View {
 		this.isGameFieldExists = true;
 		this.gameField = container;
 
-		var mainSection = document.createElement("section");
-		mainSection.innerHTML = this._getMarkup("welcome to snake");
-		container.append(mainSection);
+		this.gameField.innerHTML = this._getMarkup();
 	}
 }
