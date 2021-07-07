@@ -1,4 +1,9 @@
 export class View {
+	cssClasses = {
+		ROW: "row",
+		CELL: "cell"
+	}
+
 	_getMarkup() {
 		return `
 		<section class="game-section">
@@ -130,5 +135,21 @@ export class View {
 		this.gameField = container;
 
 		this.gameField.innerHTML = this._getMarkup();
+	}
+
+	getCellsByCoords(coordsArr) {
+		const rows = this.gameField.querySelectorAll(`.${this.cssClasses.ROW}`);
+		return coordsArr.map(cellCoords => {
+			const row = rows[cellCoords.x];
+			return row.querySelectorAll(`.${this.cssClasses.CELL}`)[cellCoords.y];
+		});
+	}
+
+	drawSquare(cell, squareType) {
+		cell.classList.add(`${this.cssClasses.CELL}--${squareType}`);
+	}
+
+	hideSquare(cell) {
+		cell.className = this.cssClasses.CELL;
 	}
 }
