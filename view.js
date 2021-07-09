@@ -145,6 +145,12 @@ export class View {
 		});
 	}
 
+	getCellByCoords(coordsObj) {
+		const rows = this.gameField.querySelectorAll(`.${this.cssClasses.ROW}`);
+		const row = rows[coordsObj.y];
+		return row.querySelectorAll(`.${this.cssClasses.CELL}`)[coordsObj.x];
+	}
+
 	drawSquare(cell, squareType) {
 		cell.classList.add(`${this.cssClasses.CELL}--${squareType}`);
 	}
