@@ -1,9 +1,6 @@
-export class View {
-	cssClasses = {
-		ROW: "row",
-		CELL: "cell"
-	}
+import {CONST} from "./const.js";
 
+export class View {
 	renderGameField(containerId, sizeX = 10, sizeY = 10) {
 		const container = document.getElementById(containerId);
 		if (!container) {
@@ -45,24 +42,24 @@ export class View {
 	}
 
 	getCellsByCoords(coordsArr) {
-		const rows = this.gameField.querySelectorAll(`.${this.cssClasses.ROW}`);
+		const rows = this.gameField.querySelectorAll(`.${CONST.CSS_CLASSES.ROW}`);
 		return coordsArr.map(cellCoords => {
 			const row = rows[cellCoords.x];
-			return row.querySelectorAll(`.${this.cssClasses.CELL}`)[cellCoords.y];
+			return row.querySelectorAll(`.${CONST.CSS_CLASSES.CELL}`)[cellCoords.y];
 		});
 	}
 
 	getCellByCoords(coordsObj) {
-		const rows = this.gameField.querySelectorAll(`.${this.cssClasses.ROW}`);
+		const rows = this.gameField.querySelectorAll(`.${CONST.CSS_CLASSES.ROW}`);
 		const row = rows[coordsObj.y];
-		return row.querySelectorAll(`.${this.cssClasses.CELL}`)[coordsObj.x];
+		return row.querySelectorAll(`.${CONST.CSS_CLASSES.CELL}`)[coordsObj.x];
 	}
 
 	drawSquare(cell, squareType) {
-		cell.classList.add(`${this.cssClasses.CELL}--${squareType}`);
+		cell.classList.add(`${CONST.CSS_CLASSES.CELL}--${squareType}`);
 	}
 
 	hideSquare(cell) {
-		cell.className = this.cssClasses.CELL;
+		cell.className = CONST.CSS_CLASSES.CELL;
 	}
 }
