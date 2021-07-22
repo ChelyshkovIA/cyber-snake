@@ -40,13 +40,10 @@
 	height: 100%;
 	width: 12.5%;
 	border: 1px solid #000;
-
-	transition: background-color .5s linear;
 }
 
 .cell--snake {
 	background-color: rgb(45, 15, 218);
-	transition: none;
 }
 
 .cell--food {
