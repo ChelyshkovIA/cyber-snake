@@ -25,38 +25,43 @@ export class Controller {
 		NIGHTMARE: 50
 	}
 
-	CENTER_COORDS = {x: 4, y: 4}
+	CENTER_COORDS = {x: 9, y: 4}
 
 	MOVE_STATE = false;
 	MAIN_DIRECTION = this.DIRECTIONS.TOP;
 	MAIN_SPEED = this.SPEED_TYPES.FAST;
-	SNAKE_HEAD_COORDS = Object.assign({}, this.CENTER_COORDS);
+	SNAKE_HEAD_COORDS;
+	SNAKE_COORDS;
 
+	/**
+	 * THIS IS MAIN GAME METHOD WHICH STARTS THE GAME.
+	 * @param {string} gameContainerId Container ID for game.
+	 */
 	async start(gameContainerId) {
 		this.Model.importStyles("snake/styles/main.css");
-		this.View.renderGameField(gameContainerId);
+		this.View.renderGameField(gameContainerId, 20, 20);
+		this.updateSnakeCoords();
 
-		document.addEventListener("keyup", (event) => {this.changeDirection(event)});
-		
-		document.addEventListener("keyup", async (event) => {
-			if (event.code === "Enter" && !this.MOVE_STATE) {
-				this.MOVE_STATE = true;
-				await this.generateMoving();
-			}
-		});
+		this.drawSnake();
+
+		document.addEventListener("keyup", event => this.changeDirection(event));
+		document.addEventListener("keyup", event => this.startMoving(event));
 	}
 
-	async drawSnake() {
-		const cellArr = this.View.getCellsByCoords(this.snakeCoords);
-		for (let i = 0; i < cellArr.length; i++) {
-			this.View.drawSquare(cellArr[i], this.CELL_TYPES.SNAKE);
-			await new Promise((r) => {
-				setTimeout(() => {r()}, this.MAIN_SPEED);
-			});
+	async startMoving(event) {
+		if (event.code === "Enter" && !this.MOVE_STATE) {
+			this.MOVE_STATE = true;
+			await this.generateMoving();
 		}
 	}
 
-	move() {
+	drawSnake() {
+		Object.assign([], this.SNAKE_COORDS)
+		.map(snakeCoord => this.View.getCellByCoords(snakeCoord))
+		.forEach(snakeCell => this.View.drawSquare(snakeCell, this.CELL_TYPES.SNAKE));
+	}
+
+	async move() {
 		switch (this.MAIN_DIRECTION) {
 			case this.DIRECTIONS.TOP:
 				--this.SNAKE_HEAD_COORDS.y;
@@ -73,12 +78,22 @@ export class Controller {
 			default: return;
 		}
 
-		const cell = this.View.getCellByCoords(this.SNAKE_HEAD_COORDS);
-		this.View.drawSquare(cell, this.CELL_TYPES.SNAKE);
+		await this.renderSnake();
+	}
+
+	renderSnake() {
+		this.SNAKE_COORDS.push(Object.assign({}, this.SNAKE_HEAD_COORDS));
+		const snakeTailCoords = this.SNAKE_COORDS.shift();
+		const snakeHeadCoords = Object.assign({}, this.SNAKE_HEAD_COORDS);
+
+		const snakeTailCell = this.View.getCellByCoords(snakeTailCoords);
+		const snakeHeadCell = this.View.getCellByCoords(snakeHeadCoords);
+		
+		this.View.drawSquare(snakeHeadCell, this.CELL_TYPES.SNAKE);
 
 		return new Promise((r) => {
 			setTimeout(() => {
-				this.View.hideSquare(cell);
+				this.View.hideSquare(snakeTailCell);
 				r();
 			}, this.MAIN_SPEED);
 		});
@@ -94,6 +109,9 @@ export class Controller {
 				isCorrectMove = false;
 				this.SNAKE_HEAD_COORDS = Object.assign({}, this.CENTER_COORDS);
 				this.MOVE_STATE = false;
+				this.View.clearGameField();
+				this.updateSnakeCoords();
+				this.drawSnake();
 			}
 		}
 	}
@@ -115,5 +133,10 @@ export class Controller {
 			default:
 				return;
 		}
+	}
+
+	updateSnakeCoords() {
+		this.SNAKE_COORDS = [{x: 4, y: 4}, {x: 5, y: 4}, {x:6, y: 4}, {x:7, y: 4}, {x:8, y: 4}, {x:9, y: 4}];
+		this.SNAKE_HEAD_COORDS = {x: 9, y: 4};
 	}
 }

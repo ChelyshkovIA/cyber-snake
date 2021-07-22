@@ -40,6 +40,10 @@ export class View {
 		this.gameField.append(markup);
 	}
 
+	clearGameField() {
+		this.gameField.querySelectorAll(".cell").forEach(cell => cell.className = "cell");
+	}
+
 	getCellsByCoords(coordsArr) {
 		const rows = this.gameField.querySelectorAll(`.${this.cssClasses.ROW}`);
 		return coordsArr.map(cellCoords => {
