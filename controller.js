@@ -1,6 +1,11 @@
 import { CONST } from "./const.js";
 
 export class Controller {
+	/**
+	 * Controller constructor.
+	 * @param {View} view View object.
+	 * @param {Model} model Model object.
+	 */
 	constructor(view, model) {
 		this.View  = view;
 		this.Model = model;
@@ -15,85 +20,49 @@ export class Controller {
 	/**
 	 * THIS IS THE MAIN GAME METHOD WHICH STARTS THE GAME.
 	 * @param {string} gameContainerId Container ID for game.
+	 * @returns {void}
 	 */
-	async start(gameContainerId) {
+	start(gameContainerId) {
 		this.Model.importStyles("snake/styles/main.css");
 		this.View.renderGameField(gameContainerId, 20, 20);
 
 		this.drawSnake();
 
-		document.addEventListener("keyup", event => this.changeDirection(event));
-		document.addEventListener("keyup", event => this.startMoving(event));
+		document.addEventListener("keyup", event => this.handleArrowsPress(event));
+		document.addEventListener("keyup", event => this.handleEnterPress(event));
 	}
 
-	async startMoving(event) {
+	/**
+	 * Handles arrow key pressing.
+	 * @param {Event} event Event object.
+	 * @returns {Promise}
+	 */
+	async handleEnterPress(event) {
 		if (event.code === "Enter" && !this.MOVE_STATE) {
 			this.MOVE_STATE = true;
-			await this.generateMoving();
-		}
-	}
 
-	drawSnake() {
-		Object.assign([], this.SNAKE_COORDS)
-		.map(snakeCoord => this.View.getCellByCoords(snakeCoord))
-		.forEach(snakeCell => this.View.drawSquare(snakeCell, CONST.CELL_TYPES.SNAKE));
-	}
-
-	async move() {
-		switch (this.MAIN_DIRECTION) {
-			case CONST.DIRECTIONS.TOP:
-				--this.SNAKE_HEAD_COORDS.y;
-				break;
-			case CONST.DIRECTIONS.BOTTOM:
-				++this.SNAKE_HEAD_COORDS.y;
-				break;
-			case CONST.DIRECTIONS.LEFT:
-				--this.SNAKE_HEAD_COORDS.x;
-				break;
-			case CONST.DIRECTIONS.RIGHT:
-				++this.SNAKE_HEAD_COORDS.x;
-				break;
-			default: return;
-		}
-
-		await this.renderSnake();
-	}
-
-	renderSnake() {
-		this.SNAKE_COORDS.push(Object.assign({}, this.SNAKE_HEAD_COORDS));
-		const snakeTailCoords = this.SNAKE_COORDS.shift();
-		const snakeHeadCoords = Object.assign({}, this.SNAKE_HEAD_COORDS);
-
-		const snakeTailCell = this.View.getCellByCoords(snakeTailCoords);
-		const snakeHeadCell = this.View.getCellByCoords(snakeHeadCoords);
-		
-		this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
-
-		return new Promise((r) => {
-			setTimeout(() => {
-				this.View.hideSquare(snakeTailCell);
-				r();
-			}, this.MAIN_SPEED);
-		});
-	}
-
-	async generateMoving() {
-		let isCorrectMove = true;
-
-		while(isCorrectMove) {
-			try {
-				await this.move();
-			} catch {
-				isCorrectMove = false;
-				this.MOVE_STATE = false;
-				this.View.clearGameField();
-				this.updateSnakeCoords();
-				this.drawSnake();
+			let isCorrectMove = true;
+	
+			while(isCorrectMove) {
+				try {
+					await this.move();
+				} catch {
+					isCorrectMove = false;
+					this.MOVE_STATE = false;
+					this.View.clearGameField();
+					this.updateSnakeCoords();
+					this.drawSnake();
+				}
 			}
 		}
 	}
-
-	changeDirection(event) {
+	
+	/**
+	 * Handles Enter key pressing.
+	 * @param {Event} event Event object.
+	 * @returns {void}
+	 */
+	handleArrowsPress(event) {
 		switch (event.code) {
 			case "ArrowUp":
 				this.MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
@@ -112,6 +81,66 @@ export class Controller {
 		}
 	}
 
+	/**
+	 * Draws snake on the game field using View methods.
+	 * @returns {void}
+	 */
+	drawSnake() {
+		Object.assign([], this.SNAKE_COORDS)
+		.map(snakeCoord => this.View.getCellByCoords(snakeCoord))
+		.forEach(snakeCell => this.View.drawSquare(snakeCell, CONST.CELL_TYPES.SNAKE));
+	}
+
+	/**
+	 * Makes snake step in necessery direction.
+	 * @returns {Promise}
+	 */
+	async move() {
+		switch (this.MAIN_DIRECTION) {
+			case CONST.DIRECTIONS.TOP:
+				--this.SNAKE_HEAD_COORDS.y;
+				break;
+			case CONST.DIRECTIONS.BOTTOM:
+				++this.SNAKE_HEAD_COORDS.y;
+				break;
+			case CONST.DIRECTIONS.LEFT:
+				--this.SNAKE_HEAD_COORDS.x;
+				break;
+			case CONST.DIRECTIONS.RIGHT:
+				++this.SNAKE_HEAD_COORDS.x;
+				break;
+			default: return;
+		}
+
+		await this.makeSnakeStep();
+	}
+
+	/**
+	 * Makes one snake step.
+	 * @returns {Promise} Promise will be resolved after finished snake step.
+	 */
+	makeSnakeStep() {
+		this.SNAKE_COORDS.push(Object.assign({}, this.SNAKE_HEAD_COORDS));
+		const snakeTailCoords = this.SNAKE_COORDS.shift();
+		const snakeHeadCoords = Object.assign({}, this.SNAKE_HEAD_COORDS);
+
+		const snakeTailCell = this.View.getCellByCoords(snakeTailCoords);
+		const snakeHeadCell = this.View.getCellByCoords(snakeHeadCoords);
+		
+		this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
+
+		return new Promise((r) => {
+			setTimeout(() => {
+				this.View.hideSquare(snakeTailCell);
+				r();
+			}, this.MAIN_SPEED);
+		});
+	}
+
+	/**
+	 * Updates snake coordinates array.
+	 * @returns {void}
+	 */
 	updateSnakeCoords() {
 		this.SNAKE_COORDS = Object.assign([], CONST.DEFAULT_SNAKE_COORDS);
 		this.SNAKE_HEAD_COORDS = Object.assign({}, CONST.DEFAULT_SNAKE_HEAD_COORDS);
