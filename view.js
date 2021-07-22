@@ -4,127 +4,7 @@ export class View {
 		CELL: "cell"
 	}
 
-	_getMarkup() {
-		return `
-		<section class="game-section">
-			<div class="header">
-				<h1 class="header-text">SNAKE</h1>
-			</div>
-
-			<div class="game-field">
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-
-				<div class="row">
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-					<div class="cell"></div>
-				</div>
-			</div>
-		</section>
-		`;
-	}
-
-	renderGameField(containerId) {
+	renderGameField(containerId, sizeX = 10, sizeY = 10) {
 		const container = document.getElementById(containerId);
 		if (!container) {
 			this.isGameFieldExists = false;
@@ -134,7 +14,30 @@ export class View {
 		this.isGameFieldExists = true;
 		this.gameField = container;
 
-		this.gameField.innerHTML = this._getMarkup();
+		let markup = document.createElement("section");
+		markup.className = "game-section";
+		markup.innerHTML = `<div class="header">
+			<h1 class="header-text">SNAKE</h1>
+		</div>`;
+
+		const gameField = document.createElement("div");
+		gameField.className = "game-field";
+
+		for (let i = 0; i < sizeX; i++) {
+			const row = document.createElement("div");
+			row.className = "row";
+
+			for (let j = 0; j < sizeY; j++) {
+				const square = document.createElement("div");
+				square.className = "cell";
+				row.append(square);
+			}
+
+			gameField.append(row);
+		}
+
+		markup.append(gameField);
+		this.gameField.append(markup);
 	}
 
 	getCellsByCoords(coordsArr) {
