@@ -33,7 +33,7 @@ export class Controller {
 	SNAKE_HEAD_COORDS = Object.assign({}, this.CENTER_COORDS);
 
 	async start(gameContainerId) {
-		this.Model.importStyles("cyber-snake/styles/main.css");
+		this.Model.importStyles("snake/styles/main.css");
 		this.View.renderGameField(gameContainerId);
 
 		document.addEventListener("keyup", (event) => {this.changeDirection(event)});
