@@ -55,7 +55,8 @@ export class View {
 	 * @returns {void}
 	 */
 	clearGameField() {
-		this.gameField.querySelectorAll(".cell").forEach(cell => cell.className = "cell");
+		this.gameField.querySelectorAll(`.${CONST.CSS_CLASSES.CELL}`)
+		.forEach(cell => cell.className = CONST.CSS_CLASSES.CELL);
 	}
 
 	/**
@@ -93,7 +94,19 @@ export class View {
 	 * @returns {void}
 	 */
 	drawSquare(cell, squareType) {
-		cell.className = `${CONST.CSS_CLASSES.CELL} ${CONST.CSS_CLASSES.CELL}--${squareType}`;
+		switch (squareType) {
+			case CONST.CELL_TYPES.EMPTY:
+				cell.className = CONST.CSS_CLASSES.CELL;
+				break;
+			case CONST.CELL_TYPES.SNAKE:
+				cell.className = `${CONST.CSS_CLASSES.CELL} ${CONST.CSS_CLASSES.CELL_SNAKE}`;
+				break;
+			case CONST.CELL_TYPES.FOOD:
+				cell.className = `${CONST.CSS_CLASSES.CELL} ${CONST.CSS_CLASSES.CELL_FOOD}`;
+				break;
+			default:
+				cell.className = CONST.CSS_CLASSES.CELL;
+		}
 	}
 
 	/**
