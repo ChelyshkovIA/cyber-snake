@@ -11,6 +11,7 @@ export class Controller {
 		this.Model = model;
 	}
 
+	CONTAINS_FOOD = false;
 	MOVE_STATE = false;
 	MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
 	MAIN_SPEED = CONST.SPEED_TYPES.FAST;
@@ -49,6 +50,7 @@ export class Controller {
 				} catch {
 					isCorrectMove = false;
 					this.MOVE_STATE = false;
+					this.CONTAINS_FOOD = false;
 					this.View.clearGameField();
 					this.updateSnakeCoords();
 					this.drawSnake();
@@ -113,8 +115,12 @@ export class Controller {
 		}
 		
 		if (this.checkSnakeKillHerself()) {
-			this.SNAKE_COORDS.shift();
 			return Promise.reject();
+		}
+
+		if (!this.CONTAINS_FOOD) {
+			this.View.renderRandomFood();
+			this.CONTAINS_FOOD = true;
 		}
 
 		await this.makeSnakeStep();
@@ -131,15 +137,19 @@ export class Controller {
 
 		const snakeTailCell = this.View.getCellByCoords(snakeTailCoords);
 		const snakeHeadCell = this.View.getCellByCoords(snakeHeadCoords);
-		
-		this.View.hideSquare(snakeTailCell);
-		this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
+		const snakeHeadCellType = this.View.getCellType(snakeHeadCell);
+
+		if (snakeHeadCellType === CONST.CELL_TYPES.EMPTY) {
+			this.View.hideSquare(snakeTailCell);
+			this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
+		} else if (snakeHeadCellType === CONST.CELL_TYPES.FOOD) {
+			this.SNAKE_COORDS.unshift(snakeTailCoords);
+			this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
+			this.CONTAINS_FOOD = false;
+		}
 
 		return new Promise((r) => {
-			setTimeout(() => {
-				this.View.hideSquare(snakeTailCell);
-				r();
-			}, this.MAIN_SPEED);
+			setTimeout(() => r(), this.MAIN_SPEED);
 		});
 	}
 

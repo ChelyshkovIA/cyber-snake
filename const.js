@@ -1,12 +1,15 @@
 export const CONST = {
 	CSS_CLASSES: {
 		ROW: "row",
-		CELL: "cell"
+		CELL: "cell",
+		CELL_SNAKE: "cell--snake",
+		CELL_FOOD: "cell--food"
 	},
 
 	CELL_TYPES: {
 		SNAKE: "snake",
-		FOOD: "food"
+		FOOD: "food",
+		EMPTY: "empty"
 	},
 
 	DIRECTIONS: {

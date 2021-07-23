@@ -1,6 +1,9 @@
 import {CONST} from "./const.js";
 
 export class View {
+	SIZE_X = 10;
+	SIZE_Y = 10;
+
 	/**
 	 * Renders game in document container.
 	 * @param {string} containerId Document container ID.
@@ -14,6 +17,9 @@ export class View {
 			this.isGameFieldExists = false;
 			return;
 		}
+
+		this.SIZE_X = sizeX;
+		this.SIZE_Y = sizeY;
 
 		this.isGameFieldExists = true;
 		this.gameField = container;
@@ -87,7 +93,7 @@ export class View {
 	 * @returns {void}
 	 */
 	drawSquare(cell, squareType) {
-		cell.classList.add(`${CONST.CSS_CLASSES.CELL}--${squareType}`);
+		cell.className = `${CONST.CSS_CLASSES.CELL} ${CONST.CSS_CLASSES.CELL}--${squareType}`;
 	}
 
 	/**
@@ -96,5 +102,51 @@ export class View {
 	 */
 	hideSquare(cell) {
 		cell.className = CONST.CSS_CLASSES.CELL;
+	}
+
+	/**
+	 * Renders food in random place on the snake field.
+	 */
+	renderRandomFood() {
+		let isEmptyCell = false;
+
+		while (!isEmptyCell) {
+			const randomX = this.getRandomFromTo(0, this.SIZE_X);
+			const randomY = this.getRandomFromTo(0, this.SIZE_Y);
+
+			const cell = this.getCellByCoords({x: randomX, y: randomY});
+
+			if (cell.className === CONST.CSS_CLASSES.CELL) {
+				isEmptyCell = true;
+				this.drawSquare(cell, CONST.CELL_TYPES.FOOD);
+			}
+		}
+	}
+
+	/**
+	 * Renders random number between specified numbers and rounds it.
+	 * @param {number} fromNumber From number.
+	 * @param {number} toNumber To number.
+	 * @returns {number}
+	 */
+	getRandomFromTo(fromNumber, toNumber) {
+		return Math.round(Math.random() * (toNumber - fromNumber) + fromNumber);
+	}
+
+	/**
+	 * Returns snake field cell type.
+	 * @param {Object} cell Snake field cell.
+	 * @returns {string} Cell type (CONST.CELL_TYPE[i]).
+	 */
+	getCellType(cell) {
+		const cellClass = cell.className;
+		
+		if (cellClass.includes(CONST.CSS_CLASSES.CELL_SNAKE)) {
+			return CONST.CELL_TYPES.SNAKE;
+		} else if (cellClass.includes(CONST.CSS_CLASSES.CELL_FOOD)) {
+			return CONST.CELL_TYPES.FOOD;
+		} else {
+			return CONST.CELL_TYPES.EMPTY;
+		}
 	}
 }
