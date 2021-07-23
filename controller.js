@@ -111,6 +111,11 @@ export class Controller {
 				break;
 			default: return;
 		}
+		
+		if (this.checkSnakeKillHerself()) {
+			this.SNAKE_COORDS.shift();
+			return Promise.reject();
+		}
 
 		await this.makeSnakeStep();
 	}
@@ -127,6 +132,7 @@ export class Controller {
 		const snakeTailCell = this.View.getCellByCoords(snakeTailCoords);
 		const snakeHeadCell = this.View.getCellByCoords(snakeHeadCoords);
 		
+		this.View.hideSquare(snakeTailCell);
 		this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
 
 		return new Promise((r) => {
@@ -134,6 +140,22 @@ export class Controller {
 				this.View.hideSquare(snakeTailCell);
 				r();
 			}, this.MAIN_SPEED);
+		});
+	}
+
+	/**
+	 * Checks if snake kill herself.
+	 * In first case returns true, in other false.
+	 * @returns {boolean}
+	 */
+	checkSnakeKillHerself() {
+		const snakeCoords = Object.assign([], this.SNAKE_COORDS);
+		const snakeHeadCoords = Object.assign({}, this.SNAKE_HEAD_COORDS);
+
+		return snakeCoords.find((snakeCoord, idx) => {
+			return snakeCoord.x === snakeHeadCoords.x 
+			&& snakeCoord.y === snakeHeadCoords.y
+			&& idx !== snakeCoords.length - 1;
 		});
 	}
 
