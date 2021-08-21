@@ -11,10 +11,12 @@ export class Controller {
 		this.Model = model;
 	}
 
+	PREV_SCORE = 0;
+	CURRENT_SCORE = 0;
 	CONTAINS_FOOD = false;
 	MOVE_STATE = false;
 	MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
-	MAIN_SPEED = CONST.SPEED_TYPES.NIGHTMARE;
+	MAIN_SPEED = CONST.SPEED_TYPES.FAST;
 	SNAKE_HEAD_COORDS = Object.assign({}, CONST.DEFAULT_SNAKE_HEAD_COORDS);
 	SNAKE_COORDS = Object.assign([], CONST.DEFAULT_SNAKE_COORDS);
 
@@ -26,6 +28,8 @@ export class Controller {
 	start(gameContainerId) {
 		this.Model.importStyles("snake/styles/main.css");
 		this.View.renderGameField(gameContainerId, 20, 20);
+		this.View.setTotalScore(this.CURRENT_SCORE);
+		this.View.setRecordScore(this.CURRENT_SCORE);
 
 		this.drawSnake();
 
@@ -42,6 +46,7 @@ export class Controller {
 		if (event.code === "Enter" && !this.MOVE_STATE) {
 			this.MAIN_DIRECTION = CONST.DIRECTIONS.RIGHT;
 			this.MOVE_STATE = true;
+			this.View.setTotalScore(this.CURRENT_SCORE);
 
 			let isCorrectMove = true;
 	
@@ -50,8 +55,11 @@ export class Controller {
 					await this.move();
 				} catch {
 					isCorrectMove = false;
+					this.updateRecordScore();
+					this.CURRENT_SCORE = 0;
 					this.MOVE_STATE = false;
 					this.CONTAINS_FOOD = false;
+					this.View.showDeathAnimation();
 					this.View.clearGameField();
 					this.updateSnakeCoords();
 					this.drawSnake();
@@ -60,6 +68,16 @@ export class Controller {
 		}
 	}
 	
+	/**
+	 * Updates record score.
+	 */
+	updateRecordScore() {
+		if (this.CURRENT_SCORE > this.PREV_SCORE) {
+			this.PREV_SCORE = this.CURRENT_SCORE;
+			this.View.setRecordScore(this.PREV_SCORE);
+		}
+	}
+
 	/**
 	 * Handles Enter key pressing.
 	 * @param {Event} event Event object.
@@ -151,6 +169,7 @@ export class Controller {
 			this.SNAKE_COORDS.unshift(snakeTailCoords);
 			this.View.drawSquare(snakeHeadCell, CONST.CELL_TYPES.SNAKE);
 			this.CONTAINS_FOOD = false;
+			this.View.setTotalScore(++this.CURRENT_SCORE);
 		}
 
 		return new Promise((r) => {
