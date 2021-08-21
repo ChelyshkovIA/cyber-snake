@@ -14,7 +14,7 @@ export class Controller {
 	CONTAINS_FOOD = false;
 	MOVE_STATE = false;
 	MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
-	MAIN_SPEED = CONST.SPEED_TYPES.FAST;
+	MAIN_SPEED = CONST.SPEED_TYPES.NIGHTMARE;
 	SNAKE_HEAD_COORDS = Object.assign({}, CONST.DEFAULT_SNAKE_HEAD_COORDS);
 	SNAKE_COORDS = Object.assign([], CONST.DEFAULT_SNAKE_COORDS);
 
@@ -40,6 +40,7 @@ export class Controller {
 	 */
 	async handleEnterPress(event) {
 		if (event.code === "Enter" && !this.MOVE_STATE) {
+			this.MAIN_DIRECTION = CONST.DIRECTIONS.RIGHT;
 			this.MOVE_STATE = true;
 
 			let isCorrectMove = true;
@@ -67,16 +68,20 @@ export class Controller {
 	handleArrowsPress(event) {
 		switch (event.code) {
 			case "ArrowUp":
-				this.MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
+				if (this.MAIN_DIRECTION != CONST.DIRECTIONS.BOTTOM)
+					this.MAIN_DIRECTION = CONST.DIRECTIONS.TOP;
 				break;
 			case "ArrowDown":
-				this.MAIN_DIRECTION = CONST.DIRECTIONS.BOTTOM;
+				if (this.MAIN_DIRECTION != CONST.DIRECTIONS.TOP)
+					this.MAIN_DIRECTION = CONST.DIRECTIONS.BOTTOM;
 				break;
 			case "ArrowLeft":
-				this.MAIN_DIRECTION = CONST.DIRECTIONS.LEFT;
+				if (this.MAIN_DIRECTION != CONST.DIRECTIONS.RIGHT)
+					this.MAIN_DIRECTION = CONST.DIRECTIONS.LEFT;
 				break;
 			case "ArrowRight":
-				this.MAIN_DIRECTION = CONST.DIRECTIONS.RIGHT;
+				if (this.MAIN_DIRECTION != CONST.DIRECTIONS.LEFT)
+					this.MAIN_DIRECTION = CONST.DIRECTIONS.RIGHT;
 				break;
 			default:
 				return;
