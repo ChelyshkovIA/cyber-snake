@@ -27,6 +27,7 @@ export class Controller {
 	 */
 	start(gameContainerId) {
 		this.Model.importStyles("snake/styles/main.css");
+		this.Model.importStyles("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 		this.View.renderGameField(gameContainerId, 20, 20);
 		this.View.setTotalScore(this.CURRENT_SCORE);
 		this.View.setRecordScore(this.CURRENT_SCORE);
